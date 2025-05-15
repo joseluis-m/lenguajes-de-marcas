@@ -114,7 +114,7 @@ Tras este paso, deberías sentirte cómodo creando un pequeño XML bien formado.
 
 Ahora pasamos al ámbito de la Web con **HTML**, el lenguaje de marcas para *hipertexto*. Crearemos una página web sencilla y entenderemos la estructura básica que todo documento HTML debe tener. Usaremos HTML5 (la versión actual, muy extendida) y editaremos el código en Visual Studio Code.
 
-### 3.1. Crear el archivo HTML  
+## 3.1. Crear el archivo HTML  
 En VS Code, crea un nuevo archivo llamado `index.html` en la carpeta de la práctica. Comienza escribiendo el siguiente esqueleto mínimo de HTML:
 
 ```html
@@ -260,6 +260,43 @@ Guarda los cambios. ¿Qué hicimos aquí? Vamos por partes:
 - `p` con `line-height: 1.6` para que los párrafos tengan interlineado amplio (160% del tamaño de texto) y se vean más claros.
 - `ul { list-style-type: square; }` cambia las viñetas de la lista a cuadrados en lugar de los círculos predeterminados.
 - `a { text-decoration: none; color: darkblue; }` quita el subrayado de los enlaces y los pone en azul oscuro (como el h1). Luego `a:hover { text-decoration: underline; }` significa que al pasar el ratón por encima de un enlace, aparezca subrayado (indicando interactividad). Hemos definido un efecto hover con CSS.
+
+## 5.2. Vincular CSS al HTML
+
+Ahora debemos decirle a nuestro HTML que use estas reglas CSS. Para ello, abrimos `index.html` de nuevo y dentro del `<head>`, añadimos una línea de enlace CSS:
+
+```html
+<head>
+  <meta charset="UTF-8" />
+  <title>Mi Página de Prueba</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+```
+
+La etiqueta `<link rel="stylesheet" href="styles.css" />` le indica al navegador que cargue el archivo externo `styles.css` y lo aplique a la página. El atributo `rel` especifica que es una hoja de estilo, y `href` la ruta del archivo CSS (asegúrate de que el nombre coincida exactamente con tu archivo). Guarda los cambios en `index.html`.  
+
+## 5.3. Verificar estilos en el navegador
+
+Recarga la página en el navegador. Deberías notar inmediatamente cambios visuales:
+
+- El fondo de la página ahora es gris claro.  
+- El texto ha cambiado de fuente (Arial o similar) y de color (gris oscuro).  
+- El título `<h1>` está centrado y azul.  
+- El subtítulo `<h2>` está gris tenue.  
+- Los párrafos tienen más espacio entre líneas.  
+- La lista muestra cuadrados en lugar de círculos.  
+- Los enlaces aparecen sin subrayado normalmente, pero si pasas el cursor sobre ellos se subrayan y quizás cambian ligeramente de tono (depende del navegador, pero en principio les definimos subrayado on hover).
+
+¡Tu página se ve mucho mejor! Y todo gracias a CSS, sin tocar el HTML del contenido. Si inspeccionas el HTML en el navegador (puedes hacer click derecho → “Inspeccionar” para ver el código y estilos), verás que el HTML sigue siendo solo estructura; la apariencia proviene de las reglas definidas en `styles.css`.
+
+### Ventajas de CSS
+Usar hojas de estilo externas tiene grandes beneficios:
+
+- Podemos cambiar fácilmente la apariencia de *toda* la página (o incluso de muchas páginas) editando solo el archivo CSS, sin tener que modificar cada archivo HTML. Esto ahorra muchísimo tiempo y reduce errores.  
+- Nuestro código HTML queda más limpio y enfocado en la estructura y contenido (por ejemplo, hemos evitado usar etiquetas obsoletas como `<font>` para color o atributos como `bgcolor`, que antes se usaban en HTML antiguo; ahora todo eso lo maneja CSS externamente). Como indica la literatura, *CSS permite separar el contenido HTML de su presentación visual, manteniendo el código HTML limpio y estructurado*.  
+- Podemos reutilizar estilos: por ejemplo, definimos un estilo para `h1` y todos los `<h1>` de la página (o de cualquier página que enlace el CSS) automáticamente lo aplicarán.  
+- La combinación de HTML + CSS mejora la **accesibilidad** y **mantenibilidad** del sitio. Incluso puedes tener distintas hojas de estilo para diferentes dispositivos (impresión, móviles, etc.) sin cambiar el HTML.  
+
 
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
