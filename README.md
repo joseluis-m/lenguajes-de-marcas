@@ -30,8 +30,6 @@ Esto ha dado lugar a lenguajes específicos **basados en XML**: por ejemplo, **S
 
 Los lenguajes de marcas, gracias a su capacidad de estructurar información, tienen aplicaciones en multitud de ámbitos: documentos web, configuración de sistemas (muchos ficheros de configuración usan XML), intercambio de datos entre aplicaciones, representación de datos complejos (ej. documentos electrónicos, facturas en XML, etc.), almacenamiento de información semiestructurada en bases de datos XML, etc. A su vez, existe la necesidad de contar con **lenguajes de propósito general** para unificar criterios: por ejemplo, XML surge de la necesidad de un formato estándar y extensible que pueda ser leído en cualquier plataforma y adaptado a cualquier tipo de datos (es decir, un *metalenguaje* para diseñar otros lenguajes de marcado). En los siguientes pasos profundizaremos en XML y HTML como ejemplos prácticos.
 
----
-
 # 2. Creación y análisis de un documento XML[^2]
 
 En este paso crearemos manualmente un pequeño documento XML y analizaremos su estructura y sintaxis, asegurándonos de que cumpla las reglas de un XML *bien formado*.
@@ -187,9 +185,89 @@ Hasta aquí, hemos identificado las etiquetas HTML principales de una página y 
 
 Antes de continuar, **guarda y verifica** que tu `index.html` se ve correctamente en el navegador con todo el contenido agregado.  
 
+# 4. Diferencias entre HTML y XHTML[^4]
+
+Llegados a este punto, es importante comprender la relación y diferencias entre **HTML** y **XHTML**, ya que a menudo se mencionan ambos. XHTML no es más que HTML escrito con las normas de XML (*eXtensible HTML*). En la práctica, XHTML 1.0 fue una reformulación de HTML 4.01 bajo la sintaxis estricta de XML. ¿Qué implica esto? Veamos las principales diferencias y su importancia:
+
+- **Sintaxis más estricta**: Como XML requiere estar bien formado, XHTML también. Todas las etiquetas deben cerrarse correctamente. En HTML, por ejemplo, `<br>` (salto de línea) o `<img>` pueden no tener cierre; en XHTML deben cerrarse como `<br />` o `<img ... />`. Lo mismo con `<meta>` o `<hr>` (añadiendo `/>` al final).
+
+- **Minúsculas y mayúsculas**: En XHTML todos los nombres de etiquetas y atributos van en minúsculas obligatoriamente (porque XML es case-sensitive). En HTML no es obligatorio; uno puede escribir `<H1>` o `<h1>` y funcionará igual, pero en XHTML `<H1>` sería inválido. En general, ya escribimos en minúsculas por convención.
+
+- **Atributos siempre con valor**: En HTML a veces existen atributos booleanos que podían escribirse sin valor (ejemplo clásico: `required` en HTML5, o `checked` en un checkbox). En XHTML, si usas un atributo, debes asignarle un valor, p. ej. `checked="checked"`.
+
+- **Documento bien formado**: XHTML requiere que el documento sea XML válido. Si envías una página XHTML real (con tipo MIME `application/xhtml+xml`) y hay un error de sintaxis, el navegador la rechazará y no mostrará nada. En cambio, con HTML tradicional (tipo MIME `text/html`), los navegadores tienden a ser tolerantes e intentar corregir o interpretar el código aunque tenga errores. Esto quiere decir que XHTML te “obliga” a hacerlo bien, lo cual puede ser beneficioso para mantener estándares, pero también puede resultar menos perdonador ante despistes.
+
+- **Comentarios, entidades, etc.**: En XHTML aplican las mismas normas de escribir entidades (por ejemplo, `&lt;` en lugar de `<`, si fuera necesario) que en XML, mientras que en HTML algunas cosas se toleran.
+
+En resumen, **XHTML es más estricto y uniforme**, mientras que **HTML** (especialmente en sus versiones previas a HTML 5) era más laxo. De hecho, HTML5 adoptó una postura híbrida: su sintaxis de base es tolerante, pero recomienda seguir buenas prácticas. Hoy día podemos escribir HTML5 _“bien formado”_ fácilmente (como lo hemos venido haciendo) y obtener lo mejor de ambos mundos.
+
+## 4.1 Utilidad de XHTML en sistemas de información
+
+Quizás te preguntes: si HTML5 es flexible y está muy extendido, *¿por qué me interesaría XHTML?* La respuesta es que al ser básicamente XML, **XHTML se integra fácilmente con otras herramientas de procesamiento de datos**. Por ejemplo, se puede almacenar directamente en bases de datos orientadas a XML, aplicar transformaciones XSLT para convertir documentos, o mezclar contenido XHTML dentro de otros XML (como vimos con namespaces).  
+
+En sistemas de gestión de información grandes, tener documentos XHTML garantiza una estructura consistente y la posibilidad de usar todo el ecosistema de tecnologías XML con nuestras páginas (validación con XSD/DTD, procesado con parsers estándar, etc.). En pocas palabras, XHTML combina la semántica de HTML con la robustez de XML. No es que HTML5 no pueda ser riguroso, pero XHTML formaliza ese rigor.
+
+Con esto, hemos contrastado **HTML vs. XHTML**. Lo esencial a recordar: XHTML es HTML con las normas XML. Para propósitos de esta práctica, nos quedamos con nuestro documento HTML5, asegurándonos de que sigue **buenas prácticas** (lo que hemos hecho ya cumple casi todas las normas XHTML excepto minúsculas que ya usamos y cierres que también, así que nuestro HTML es casi XHTML válido).  
+
+# Paso 5: Aplicación de hojas de estilo CSS[^5]
+
+Hasta ahora nuestra página HTML se ve bastante simple: texto negro sobre fondo blanco, tipografía básica. Vamos a mejorar su presentación utilizando **CSS** (Cascading Style Sheets), la tecnología estándar para dar estilo a las páginas web. Con CSS podremos cambiar colores, fuentes, distribución, etc., _separando la presentación del contenido_. Esto cumple el objetivo de tener un marcado HTML semántico (que solo estructura contenido) por un lado, y las reglas visuales por otro lado en las hojas de estilo, lo cual es una gran ventaja en desarrollo web moderno.
+
+## 5.1 Crear el archivo CSS
+
+En la misma carpeta, crea un archivo nuevo llamado `styles.css`. Aquí escribiremos reglas CSS que luego vincularemos a nuestro HTML. Escribe el siguiente contenido en `styles.css`:
+
+```css
+/* Estilos básicos para la página */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
+h1 {
+    color: darkblue;
+    text-align: center;
+}
+
+h2 {
+    color: #555555;
+}
+
+p {
+    line-height: 1.6;
+}
+
+ul {
+    list-style-type: square;
+}
+
+a {
+    text-decoration: none;
+    color: darkblue;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+```
+
+Guarda los cambios. ¿Qué hicimos aquí? Vamos por partes:
+
+- Las reglas CSS siguen la sintaxis `selector { propiedad: valor; propiedad: valor; }`. Es decir, indicamos a qué elemento(s) HTML se aplica el estilo (selector) y luego entre llaves las propiedades CSS con sus valores.
+- `body { ... }` aplica al elemento `<body>` de nuestra página. Cambiamos la fuente por Arial (o sans-serif genérico) y ponemos un color de fondo gris muy claro (`#f0f0f0`). También definimos un color de texto `#333333` (un gris oscuro) en lugar de negro puro, para una lectura más suave.
+- `h1` centrado y color azul oscuro; `h2` en gris medio.
+- `p` con `line-height: 1.6` para que los párrafos tengan interlineado amplio (160% del tamaño de texto) y se vean más claros.
+- `ul { list-style-type: square; }` cambia las viñetas de la lista a cuadrados en lugar de los círculos predeterminados.
+- `a { text-decoration: none; color: darkblue; }` quita el subrayado de los enlaces y los pone en azul oscuro (como el h1). Luego `a:hover { text-decoration: underline; }` significa que al pasar el ratón por encima de un enlace, aparezca subrayado (indicando interactividad). Hemos definido un efecto hover con CSS.
+
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
 
 [^2]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 6, 7, 8, 9 (características propias de XML; estructura y reglas sintácticas de un XML; importancia de documentos bien formados; ventaja de los espacios de nombres en XML).
 
 [^3]: Real Decreto 1629/2009, resultado de aprendizaje 2, criterios de evaluación: 1, 2, 3, 6 (lenguajes de marcas web y sus versiones – introducción a HTML5; estructura de un documento HTML y sus secciones; etiquetas y atributos principales de HTML; uso de herramienta de edición VS Code en la creación de páginas).
+
+[^4]: Real Decreto 1629/2009, resultado de aprendizaje 2, criterios de evaluación: 4, 5 (semejanzas y diferencias entre HTML y XHTML; utilidad de XHTML en sistemas de gestión de información).
+
+[^5]: Real Decreto 1629/2009, resultado de aprendizaje 2, criterios de evaluación: 7, 8 (ventajas de utilizar hojas de estilo CSS; aplicación práctica de hojas de estilo en un documento web).
