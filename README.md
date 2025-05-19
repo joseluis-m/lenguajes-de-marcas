@@ -297,6 +297,155 @@ Usar hojas de estilo externas tiene grandes beneficios:
 - Podemos reutilizar estilos: por ejemplo, definimos un estilo para `h1` y todos los `<h1>` de la página (o de cualquier página que enlace el CSS) automáticamente lo aplicarán.  
 - La combinación de HTML + CSS mejora la **accesibilidad** y **mantenibilidad** del sitio. Incluso puedes tener distintas hojas de estilo para diferentes dispositivos (impresión, móviles, etc.) sin cambiar el HTML.  
 
+## 5.4. Experimentos adicionales
+
+Si deseas, juega un poco con el CSS para afianzar conocimientos. Por ejemplo, cambia el `background-color` a otro color, o agrega una regla para el elemento `li` (items de lista) para, digamos, ponerles margen inferior y que no queden tan juntos. También podrías probar a añadir en HTML un elemento nuevo, por ejemplo un `<div>` con algún contenido, y luego estilizar ese `div` con CSS. Recuerda que cada vez que cambies CSS, basta con recargar la página para ver el efecto (no olvides guardar el archivo CSS también).
+
+Con esto, **hemos aplicado correctamente una hoja de estilo CSS** a nuestra página. Ahora tenemos una mini página web estructurada y con estilo.
+
+# 6. Creación de un canal de sindicación[^6]
+
+En esta primera parte crearás un **canal RSS 2.0** desde cero, añadiendo contenido de ejemplo y comprobando su correcto funcionamiento. Un *canal RSS* (Really Simple Syndication) es un documento XML especial que permite **difundir contenido actualizado** (noticias, entradas de blog, etc.) para que otros sitios o aplicaciones (llamados *agregadores* o *lectores RSS*) lo consuman automáticamente. Trabajaremos con RSS versión 2.0, uno de los formatos de sindicación más extendidos, pero ten en cuenta que existe otro estándar llamado *Atom* con propósitos similares.
+
+_**Antes de empezar:**_ Asegúrate de tener a mano **Visual Studio Code**. Se recomienda instalar la extensión **XML (Language Support by Red Hat)** para disponer de coloreado de sintaxis XML, autocompletado básico y validación integrada. Esta extensión ayudará a identificar errores de sintaxis mientras editas el feed _(RA3.c y RA3.g: uso de herramientas específicas y tecnologías base de sindicación)._
+
+Ahora sí, vamos con los pasos:
+
+## 6.1. Crear el archivo XML para el feed
+Abre VS Code y crea un fichero nuevo llamado `feed.xml`. Comienza escribiendo la **declaración XML** en la primera línea:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+```
+
+ A continuación, añade el elemento raíz del feed RSS. En RSS 2.0, el elemento raíz es `<rss>` e incluye un atributo obligatorio `version="2.0"`. Dentro de `<rss>` irá todo el contenido del canal. Escribe la estructura básica de apertura y cierre:
+
+ ```xml
+ <rss version="2.0">
+   <channel>
+     <!-- Contenido del canal, irá aquí -->
+   </channel>
+ </rss>
+ ```
+
+   Guarda el archivo. De este modo ya tienes la estructura mínima: un elemento raíz `<rss>` y, dentro, un elemento `<channel>` que contendrá la información del canal y sus noticias (items). Este inicio corresponde a identificar la estructura base de un canal de contenidos (RA3.d) y a preparar la descripción de la información que se transmitirá (RA3.a).
+
+## 6.2. Definir la información del canal (metadatos del RSS)
+
+Dentro del elemento `<channel>`, agrega los elementos obligatorios que describen tu canal RSS: **título**, **enlace** y **descripción**. Estos tres elementos son requeridos por la especificación RSS 2.0 para identificar el canal:
+
+- `<title>` – El nombre del canal (por ejemplo, el nombre de tu sitio o feed).  
+- `<link>` – La URL web del sitio principal relacionado con el feed.  
+- `<description>` – Una descripción breve del contenido del canal.
+
+Por ejemplo, supongamos que estamos creando un RSS para las noticias de un sitio llamado “Mi Sitio de Noticias”. Rellena los campos así:
+
+```xml
+<rss version="2.0">
+  <channel>
+    <title>Mi Sitio de Noticias</title>
+    <link>https://www.misitio.com/</link>
+    <description>Últimas noticias y actualizaciones de Mi Sitio</description>
+    <!-- Más elementos aquí -->
+  </channel>
+</rss>
+```
+
+Puedes añadir algunos metadatos adicionales recomendados para el canal, como:
+
+```xml
+<language>es-es</language>
+<lastBuildDate>Tue, 13 May 2025 10:00:00 GMT</lastBuildDate>
+<managingEditor>editor@misitio.com (Editor Nombre)</managingEditor>
+```
+
+## 6.3. Añadir ítems al canal RSS
+ 
+Ahora crearás las entradas de contenido (noticias, posts, etc.) dentro del canal. En RSS, cada entrada se representa con un elemento `<item>` dentro de `<channel>`. Cada `<item>` normalmente contiene al menos: un **título**, un **enlace** (URL específica de esa noticia o post) y/o una **descripción** breve. También se suele incluir la fecha de publicación (`<pubDate>`) y un identificador único (`<guid>`). Vamos a añadir dos ítems de ejemplo:
+
+```xml
+<!-- ... metadatos del canal ... -->
+<item>
+  <title>Nueva versión del sistema implementada</title>
+  <link>https://www.misitio.com/noticias/version-nueva</link>
+  <description>Hemos actualizado nuestros sistemas a la versión 2.0, mejora de rendimiento y seguridad.</description>
+  <pubDate>Tue, 13 May 2025 09:30:00 GMT</pubDate>
+  <guid>https://www.misitio.com/noticias/version-nueva</guid>
+</item>
+<item>
+  <title>Mantenimiento programado este fin de semana</title>
+  <link>https://www.misitio.com/noticias/mantenimiento</link>
+  <description>Se realizará un mantenimiento de servidores el domingo por la mañana, puede haber cortes breves.</description>
+  <pubDate>Tue, 13 May 2025 09:00:00 GMT</pubDate>
+  <guid>https://www.misitio.com/noticias/mantenimiento</guid>
+</item>
+```
+
+Aquí hemos agregado dos elementos `<item>` con información ficticia de ejemplo. Observa que cada `<guid>` hemos usado la URL de la noticia, pero podría ser otro identificador único. El `<guid>` ayuda a los agregadores a diferenciar una entrada de otra de forma única. Asegúrate que todos los elementos abren y cierran correctamente y están anidados dentro de `<channel>`.
+
+Tras este paso, tu archivo `feed.xml` completo debería verse parecido a esto:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>Mi Sitio de Noticias</title>
+        <link>https://www.misitio.com/</link>
+        <description>Últimas noticias y actualizaciones de Mi Sitio</description>
+        <language>es-es</language>
+        <lastBuildDate>Tue, 13 May 2025 10:00:00 GMT</lastBuildDate>
+
+        <item>
+            <title>Nueva versión del sistema implementada</title>
+            <link>https://www.misitio.com/noticias/version-nueva</link>
+            <description>Hemos actualizado nuestros sistemas a la versión 2.0, mejorando el rendimiento.</description>
+            <pubDate>Tue, 13 May 2025 09:30:00 GMT</pubDate>
+            <guid>https://www.misitio.com/noticias/version-nueva</guid>
+        </item>
+        <item>
+            <title>Mantenimiento programado este fin de semana</title>
+            <link>https://www.misitio.com/noticias/mantenimiento</link>
+            <description>Se realizará un mantenimiento de servidores el domingo por la madrugada.</description>
+            <pubDate>Tue, 13 May 2025 09:00:00 GMT</pubDate>
+            <guid>https://www.misitio.com/noticias/mantenimiento</guid>
+        </item>
+    </channel>
+</rss>
+```
+
+En este punto has creado un canal de contenidos completo y definido su estructura con varios ítems, cumpliendo con los requisitos básicos del formato RSS 2.0. **Esto cubre los criterios RA3.d** (identificar estructura y sintaxis del canal), **RA3.e** (creación de canales de contenidos) y parte de **RA3.c** (tecnologías base de sindicación, ya que estás aplicando XML y RSS en la práctica).
+
+## 6.4. Validar la sintaxis y estructura del feed RSS
+Es fundamental comprobar que el feed es **válido y bien formado**, para asegurarnos de que los agregadores podrán leerlo sin problemas.
+
+1. **Verifica errores de sintaxis XML:** Si tienes la extensión de XML en VS Code, deberías ver marcado cualquier error (por ejemplo, etiquetas no cerradas, formato de fecha mal escapado, caracteres no permitidos, etc.). Corrige cualquier error que aparezca.
+
+2. **Valida con un servicio RSS:** Puedes usar herramientas en línea gratuitas como el **W3C Feed Validation Service** para comprobar tu feed. Abre la URL del validador `https://validator.w3.org/feed/` e ingresa tu feed. Si aún no tienes tu feed disponible en Internet con una URL pública, puedes copiar y pegar el contenido XML directamente en la opción “Validate by Direct Input”. El validador te indicará si tu RSS cumple con las reglas de la especificación y te avisará de cualquier problema.
+
+3. **Otras opciones de validación:** Alternativamente, hay otros validadores como el de RSS Board o extensiones de navegador que validan feeds. Realiza esta comprobación y asegúrate de obtener un mensaje de “Valid RSS feed” o similar. Si hay errores (por ejemplo, campos obligatorios faltantes o fechas con formato incorrecto), vuelve al archivo `feed.xml` en VS Code, corrige los detalles y valida de nuevo hasta que esté correcto.
+
+_Esta acción corresponde al criterio RA3.e: validar los canales de contenido creados, asegurando que siguen las reglas del formato. También se relaciona con RA3.d al reforzar que la sintaxis del canal es la adecuada._  
+
+## 6.5. Probar el feed con un agregador RSS
+
+Una vez que el canal RSS es válido, es hora de comprobar su funcionalidad y acceso en un entorno real, es decir, usar un lector o agregador de RSS como lo harían los usuarios finales. Para ello, necesitas que tu archivo `feed.xml` sea accesible vía una URL. 
+
+- Si dispones de un servidor web local, coloca el archivo en un directorio público y anota la URL (por ejemplo `http://localhost/feed.xml`).  
+- Si no, una forma sencilla es aprovechar GitHub: sube tu `feed.xml` a un repositorio público (en la rama principal) y usa el enlace bruto (raw) que provee GitHub para ese archivo como URL del feed, algo como  
+ `https://raw.githubusercontent.com/tu-usuario/tu-repo/main/feed.xml`.
+
+Luego, utiliza un agregador online para suscribirte a tu feed. Por ejemplo, en Feedly (un popular lector RSS online), añade un feed pegando la URL de tu `feed.xml`. Si todo va bien, el agregador detectará el canal y listará los ítems que creaste, mostrando el título del canal, los títulos de las noticias y sus descripciones. Prueba a hacer clic en los ítems para verificar que los enlaces funcionan (en nuestro ejemplo, serían URLs de ejemplo).
+
+También puedes usar otras herramientas: clientes de correo como Thunderbird permiten suscribirse a feeds RSS, o extensiones de navegador como RSS Reader que agregan un icono RSS en la barra de direcciones. Cualquier herramienta de sindicación servirá para esta prueba. Lo importante es confirmar que:
+- El agregador puede **acceder al feed** (es decir, la URL es alcanzable).  
+- Reconoce correctamente el **título del canal** y la **descripción**.  
+- Enumera los **ítems** con sus títulos y resúmenes.  
+- No muestra **errores de parsing** ni contenido vacío.
+
+Si la herramienta no reconoce el feed, repite el paso anterior de validación porque probablemente hay algún problema de formato. Una vez que consigas visualizar el feed en el agregador, habrás completado con éxito la creación y publicación de tu primer canal RSS.
+
+> **Nota:** Si bien hemos usado RSS 2.0 en este ejercicio, recuerda que **Atom** es otra tecnología de sindicación (formato XML RFC 4287) con estructura algo distinta (usa `<feed>` en vez de `<rss>` y elementos estandarizados como `<entry>` para ítems). Las ventajas de sindicación (contenido actualizado automáticamente disponible) se aplican por igual a RSS y Atom. Conocer ambas tecnologías te da una perspectiva más amplia, pero la metodología de creación y validación es similar a lo practicado.  
+
 
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
@@ -308,3 +457,7 @@ Usar hojas de estilo externas tiene grandes beneficios:
 [^4]: Real Decreto 1629/2009, resultado de aprendizaje 2, criterios de evaluación: 4, 5 (semejanzas y diferencias entre HTML y XHTML; utilidad de XHTML en sistemas de gestión de información).
 
 [^5]: Real Decreto 1629/2009, resultado de aprendizaje 2, criterios de evaluación: 7, 8 (ventajas de utilizar hojas de estilo CSS; aplicación práctica de hojas de estilo en un documento web).
+
+[^5]: Real Decreto 1629/2009, resultado de aprendizaje 3.
+
+[^5]: Real Decreto 1629/2009, resultado de aprendizaje 4.
