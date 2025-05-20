@@ -8,7 +8,7 @@
     <description>Últimas noticias y actualizaciones de Mi Página de Prueba.</description>
     <language>es-es</language>
     <!-- Fecha de construcción del feed (formato RFC 822) -->
-    <lastBuildDate>Tue, 20 May 2025 10:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 20 May 2025 12:00:00 GMT</lastBuildDate>
     <!-- Correo del responsable del sitio (opcional) -->
     <managingEditor>tu-correo@ejemplo.com (Nombre del Editor)</managingEditor>
 
@@ -26,7 +26,7 @@
       <title>Nuevo artículo: Introducción a los lenguajes de marcas</title>
       <link>https://joseluis-m.github.io/guia-html-css.html</link>
       <description>Profundizamos en la clasificación y ventajas de los lenguajes de marcas: presentación, procedimentales y descriptivos.</description>
-      <pubDate>Tue, 20 May 2025 09:00:00 GMT</pubDate>
+      <pubDate>Tue, 20 May 2025 12:00:00 GMT</pubDate>
       <guid>https://joseluis-m.github.io/guia-html-css.html</guid>
     </item>
 
