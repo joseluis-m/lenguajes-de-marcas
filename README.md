@@ -461,3 +461,5 @@ Si la herramienta no reconoce el feed, repite el paso anterior de validación po
 [^5]: Real Decreto 1629/2009, resultado de aprendizaje 3.
 
 [^5]: Real Decreto 1629/2009, resultado de aprendizaje 4.
+
+[^6]: Real Decreto 1629/2009, resultado de aprendizaje 5.
