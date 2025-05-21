@@ -481,9 +481,103 @@ Comencemos elaborando el documento XML de inventario conforme a la estructura pe
 
 Aquí hemos creado dos entradas de ejemplo bajo la raíz `<inventario>`. Cada `<ordenador>` tiene un atributo `id` distinto (`PC001` y `PC002`) y los tres subelementos acordados. Antes de continuar, verifica que `inventario.xml` está **bien formado** (well-formed): cada etiqueta abre y cierra correctamente, la jerarquía es correcta y la codificación UTF-8 está declarada. Si tienes la extensión XML activa, cualquier error de sintaxis se te indicará; de lo contrario, una forma rápida de comprobarlo es abrir el archivo en un navegador web moderno, ya que suelen mostrar error si el XML está mal formado.
 
-Actualmente, este documento XML **no tiene esquema asociado**. Podría tener errores lógicos (por ejemplo, faltar un `<usuario>` en algún `<ordenador>`) y no lo sabríamos fácilmente. Mantén abierto este archivo; el siguiente paso será crear la definición formal de su estructura.  
-*(Este documento servirá para aplicar luego los criterios RA4.e y RA4.f, usando un esquema para su validación y asociación, pero de momento hemos definido la información que contendrá, alineado con RA4.a).*  
+Actualmente, este documento XML **no tiene esquema asociado**. Podría tener errores lógicos (por ejemplo, faltar un `<usuario>` en algún `<ordenador>`) y no lo sabríamos fácilmente. Mantén abierto este archivo; el siguiente paso será crear la definición formal de su estructura.
 
+## 7.3. Crear el esquema DTD para el documento XML (`inventario.dtd`)
+
+Ahora vamos a escribir la definición de tipo de documento (DTD) que describa la estructura válida de `inventario.xml`. Crea un nuevo archivo en el mismo directorio llamado `inventario.dtd`. En este fichero, definiremos cada elemento y atributo según las reglas deseadas:
+
+- El elemento raíz `<inventario>` debe contener uno o más `<ordenador>` (al menos uno, potencialmente muchos).  
+- Cada `<ordenador>` contiene exactamente tres subelementos en un orden específico: `<ubicacion>`, `<usuario>`, `<sistemaOperativo>` (uno de cada uno, en ese orden).  
+- Los elementos `<ubicacion>`, `<usuario>` y `<sistemaOperativo>` contendrán texto (#PCDATA en terminología DTD).  
+- El elemento `<ordenador>` tiene un atributo obligatorio `id`, que podemos definir como tipo `ID` para que cada valor sea único en el documento (esto asegura que no haya dos ordenadores con el mismo identificador).
+
+Comencemos definiendo el elemento raíz y su contenido en el DTD:
+
+```dtd
+<!-- DTD para el inventario de ordenadores -->
+<!ELEMENT inventario (ordenador+)>
+```
+
+Esta línea declara que `<inventario>` es un elemento compuesto por una o más repeticiones (`+`) de `<ordenador>`. Ahora definamos el elemento `<ordenador>` y sus hijos:
+
+```dtd
+<!ELEMENT ordenador (ubicacion, usuario, sistemaOperativo)>
+<!ELEMENT ubicacion (#PCDATA)>
+<!ELEMENT usuario (#PCDATA)>
+<!ELEMENT sistemaOperativo (#PCDATA)>
+```
+
+La declaración de `<ordenador>` indica que debe tener exactamente en su interior un `<ubicacion>`, seguido de un `<usuario>`, seguido de un `<sistemaOperativo>` (esa coma entre ellos denota secuencia obligatoria). Luego declaramos cada uno de esos subelementos como elementos de texto (`#PCDATA` significa “Parsed Character Data”, es decir, datos de texto plano dentro de la etiqueta).
+
+Por último, definimos la lista de atributos de `<ordenador>`:
+
+```dtd
+<!ATTLIST ordenador
+    id ID #REQUIRED
+>
+```
+
+Esta declaración indica que el elemento `<ordenador>` tiene un atributo llamado `id`, de tipo `ID` (identificador único XML) y cuyo valor es **requerido** (`#REQUIRED`) en cada `<ordenador>`; es decir, ningún `<ordenador>` puede carecer de este atributo. Gracias al tipo `ID`, si accidentalmente dos ordenadores tuvieran el mismo `id`, un validador lo detectaría como error, garantizando unicidad.
+
+Juntando todo, tu archivo `inventario.dtd` debería contener:
+
+```dtd
+<!-- DTD para el inventario de ordenadores de la empresa -->
+<!ELEMENT inventario (ordenador+)>
+<!ELEMENT ordenador (ubicacion, usuario, sistemaOperativo)>
+<!ELEMENT ubicacion (#PCDATA)>
+<!ELEMENT usuario (#PCDATA)>
+<!ELEMENT sistemaOperativo (#PCDATA)>
+<!ATTLIST ordenador
+    id ID #REQUIRED
+>
+```
+
+No olvides guardar los cambios. Observa que hemos incluido un comentario descriptivo al inicio del DTD que explica brevemente de qué trata (esto es parte de la buena práctica de documentar nuestros esquemas). Puedes añadir más comentarios si lo deseas, por ejemplo antes de la sección de atributos, para aclarar que `id` debe ser único (con esta creación del DTD hemos cubierto RA4.c, RA4.d y RA4.h).
+
+## 7.4. Asociar el esquema DTD con el documento XML
+
+Para que el documento XML `inventario.xml` sepa que debe seguir las reglas del DTD que acabas de crear, hay que asociarlos. En XML esto se logra añadiendo una declaración de `DOCTYPE` al inicio del archivo XML que referencia la DTD. Edita `inventario.xml` y, justo después de la declaración XML (`<?xml version="1.0" encoding="UTF-8" ?>`), añade la siguiente línea:
+
+```xml
+<!DOCTYPE inventario SYSTEM "inventario.dtd">
+```
+
+Debería quedar así al principio del archivo:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE inventario SYSTEM "inventario.dtd">
+<inventario>
+    <ordenador id="PC001"> ...
+    ...
+</inventario>
+```
+
+Esta línea DOCTYPE le indica al parser XML que el elemento raíz es `<inventario>` y que su definición está en el fichero externo `"inventario.dtd"`. Asegúrate de que `inventario.dtd` está en la misma carpeta que el XML para que pueda encontrarse mediante esa ruta. Ahora el documento `inventario.xml` está vinculado a su esquema (criterio RA4.f).
+
+## 7.5. Validar el documento XML contra el esquema DTD
+
+Con la asociación hecha, podemos validar el XML para comprobar que cumple las reglas que definimos. Si instalaste la extensión XML de Red Hat en VS Code, es muy probable que la validación se realice automáticamente al guardar o abrir el documento. Abre `inventario.xml` en VS Code; deberías ver en la barra de estado o en la pestaña de problemas si hay errores de validación. Dado que escribimos el XML de acuerdo al esquema, no debería haber errores.
+
+Vamos a probar la robustez del esquema con un par de experimentos controlados:
+
+- **Prueba 1:** Edita temporalmente el XML para introducir un error, por ejemplo quita la etiqueta `<usuario>` (y su cierre) de uno de los `<ordenador>`. Guarda y observa que el validador DTD marcará un error indicando algo como que se esperaba `<usuario>` en cierto lugar. Esto confirma que el esquema detecta la falta de un elemento obligatorio. Vuelve a deshacer el cambio para restaurar el XML correcto.
+
+- **Prueba 2:** Introduce un segundo atributo `id` duplicado en otro ordenador (por ejemplo, pon `id="PC001"` también en el segundo `<ordenador>`). Al validar, el parser XML debería advertir que el valor ID ya existe (porque los IDs deben ser únicos). Este comportamiento puede variar según la herramienta, pero en general las validaciones completas de DTD chequean unicidad de ID. Restablece luego el `id` correcto distinto.
+
+Si no estás usando VS Code o la extensión no muestra errores por sí misma, puedes validar usando herramientas externas: una opción es utilizar la utilidad de línea de comandos `xmllint` (disponible en Linux y en Windows vía Cygwin o WSL). Ejecutando en la terminal `xmllint --noout --valid inventario.xml`, se procesará el XML con su DTD y se informará si hay violaciones del esquema. Otra opción es algún validador online de XML que permita subir tanto el XML como la DTD. Cualquiera sea el método, lo importante es confirmar que **con la DTD asociada, el documento se considera válido**.
+
+Al terminar, tu XML de inventario válido se convierte en un documento **válido** (no solo bien formado) porque satisface todas las reglas de su DTD (esto cubre el criterio RA4.e y RA4.g).
+
+## 7.6. Refinar y documentar el esquema XML
+
+Como paso final, revisa tu archivo `inventario.dtd` para asegurarte de que esté **bien documentado** y optimizado. Hemos agregado un comentario al inicio, pero podríamos añadir más si la estructura fuera más compleja. En este caso sencillo, con un comentario general es suficiente, aunque podrías anotar, por ejemplo, que el orden de `<ubicacion>`, `<usuario>`, `<sistemaOperativo>` es fijo según este diseño. Documentar el esquema es importante cuando otras personas vayan a usarlo o mantenerlo: unas breves líneas explicativas pueden ahorrar confusiones.
+
+Piensa también si tu esquema necesita alguna adaptación: por ejemplo, ¿y si en el futuro quisieras agregar un nuevo campo `<ip>` a cada ordenador? Tendrías que actualizar tanto la DTD (añadiendo ese elemento en la definición de `ordenador`) como todos los XML que la usan. Mantener la consistencia esquema–archivo es vital. En esta ocasión no añadiremos más campos, pero es útil reflexionar sobre la escalabilidad del esquema diseñado (con la revisión y comentarios finales, reforzamos el criterio RA4.h)._
+
+> **Nota:** Si optáramos por usar XSD en vez de DTD, la mecánica sería parecida: definir un archivo `.xsd` con elementos y tipos, y luego referenciarlo desde el XML con un atributo `xsi:noNamespaceSchemaLocation="inventario.xsd"` en la raíz (junto con `xmlns:xsi`). La validación se haría igual. XSD permitiría, por ejemplo, restringir que `<sistemaOperativo>` solo pueda tener ciertos valores (Windows, Linux, etc.) usando enumeraciones, o definir que el contenido de `<id>` siga un patrón particular. Estas son ventajas de XSD sobre DTD. Sin embargo, para propósitos de este ejercicio, la DTD cumple con ilustrar el proceso de definición de esquema y validación.
 
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
