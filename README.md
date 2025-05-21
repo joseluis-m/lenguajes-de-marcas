@@ -305,7 +305,7 @@ Con esto, **hemos aplicado correctamente una hoja de estilo CSS** a nuestra pág
 
 # 6. Creación de un canal de sindicación[^6]
 
-En esta primera parte crearás un **canal RSS 2.0** desde cero, añadiendo contenido de ejemplo y comprobando su correcto funcionamiento. Un *canal RSS* (Really Simple Syndication) es un documento XML especial que permite **difundir contenido actualizado** (noticias, entradas de blog, etc.) para que otros sitios o aplicaciones (llamados *agregadores* o *lectores RSS*) lo consuman automáticamente. Trabajaremos con RSS versión 2.0, uno de los formatos de sindicación más extendidos, pero ten en cuenta que existe otro estándar llamado *Atom* con propósitos similares.
+A continuación, crearás un **canal RSS 2.0** desde cero, añadiendo contenido de ejemplo y comprobando su correcto funcionamiento. Un *canal RSS* (Really Simple Syndication) es un documento XML especial que permite **difundir contenido actualizado** (noticias, entradas de blog, etc.) para que otros sitios o aplicaciones (llamados *agregadores* o *lectores RSS*) lo consuman automáticamente. Trabajaremos con RSS versión 2.0, uno de los formatos de sindicación más extendidos, pero ten en cuenta que existe otro estándar llamado *Atom* con propósitos similares.
 
 _**Antes de empezar:**_ Asegúrate de tener a mano **Visual Studio Code**. Se recomienda instalar la extensión **XML (Language Support by Red Hat)** para disponer de coloreado de sintaxis XML, autocompletado básico y validación integrada. Esta extensión ayudará a identificar errores de sintaxis mientras editas el feed _(RA3.c y RA3.g: uso de herramientas específicas y tecnologías base de sindicación)._
 
@@ -356,7 +356,7 @@ Puedes añadir algunos metadatos adicionales recomendados para el canal, como:
 ```xml
 <language>es-es</language>
 <lastBuildDate>Tue, 13 May 2025 10:00:00 GMT</lastBuildDate>
-<managingEditor>editor@misitio.com (Editor Nombre)</managingEditor>
+<managingEditor>editor@misitio.com</managingEditor>
 ```
 
 ## 6.3. Añadir ítems al canal RSS
@@ -445,6 +445,44 @@ También puedes usar otras herramientas: clientes de correo como Thunderbird per
 Si la herramienta no reconoce el feed, repite el paso anterior de validación porque probablemente hay algún problema de formato. Una vez que consigas visualizar el feed en el agregador, habrás completado con éxito la creación y publicación de tu primer canal RSS.
 
 > **Nota:** Si bien hemos usado RSS 2.0 en este ejercicio, recuerda que **Atom** es otra tecnología de sindicación (formato XML RFC 4287) con estructura algo distinta (usa `<feed>` en vez de `<rss>` y elementos estandarizados como `<entry>` para ítems). Las ventajas de sindicación (contenido actualizado automáticamente disponible) se aplican por igual a RSS y Atom. Conocer ambas tecnologías te da una perspectiva más amplia, pero la metodología de creación y validación es similar a lo practicado.  
+
+# 7. Definición y uso de un esquema XML
+
+Continuando con el punto anterior, trabajaremos con _esquemas XML_ que permiten definir la sintaxis y estructura válida de un tipo de documento XML. Un esquema actúa como “contrato”: especifica qué elementos pueden aparecer, en qué orden, qué atributos están permitidos, qué valores son válidos, etc. Esto ayuda a validar XML automáticamente y asegurar que la información cumpla ciertos requisitos formales. Existen principalmente dos formas tradicionales de definir esquemas en XML: la **DTD** (Document Type Definition), propia de la especificación XML 1.0, y los esquemas XML **XSD**, recomendación más reciente del W3C que es más potente y flexible. En esta práctica utilizaremos DTD por simplicidad, pero los pasos serían análogos usando XSD.
+
+Supongamos un caso práctico: eres el administrador de sistemas y necesitas intercambiar información sobre el inventario de ordenadores de la empresa en formato XML. Para garantizar que todos los departamentos manejen la misma estructura de datos, vas a diseñar un esquema que defina cómo deben ser esos XML de inventario.
+
+## 7.1. Diseñar la estructura de datos e identificar la necesidad de un esquema
+Antes de escribir ninguna línea, define qué datos contendrá el documento XML y cómo se organizarán. En nuestro ejemplo de _inventario de ordenadores_, imaginemos que queremos listar cada ordenador con su `identificador`, `ubicación física`, `usuario` asignado y `sistema operativo` instalado. Podríamos estructurarlo así: un elemento raíz `<inventario>` que agrupa múltiples elementos `<ordenador>`, donde cada `<ordenador>` tiene un atributo `id` (código único del equipo) y contiene a su vez tres elementos hijos: `<ubicacion>`, `<usuario>` y `<sistemaOperativo>` con el detalle correspondiente.
+
+Sin un esquema, podríamos escribir este XML libremente, pero no habría nada que asegure que todos los creadores de inventarios sigan la misma estructura (podrían omitir por error algún campo, cambiar un nombre de etiqueta, etc.). Aquí es donde vemos la **necesidad de describir formalmente la información transmitida por el documento XML y sus reglas** _(criterio RA4.a)_: el esquema nos permitirá _imponer_ que cada ordenador tenga esos campos, que el atributo `id` sea obligatorio, etc.
+
+Además, debemos escoger qué tecnología de esquema usar: ¿DTD o XSD? Las **DTD** son más sencillas de escribir y entender, pero tienen limitaciones (por ejemplo, no permiten definir tipos numéricos). Los **XSD** son XML en sí mismos y permiten tipos de datos, espacios de nombres, etc., pero su sintaxis es más compleja. Para este ejercicio utilizaremos DTD por facilidad didáctica, sabiendo que **existen ambas tecnologías para definir documentos XML** _(criterio RA4.b)._
+
+## 7.2. Crear un documento XML de ejemplo (`inventario.xml`)
+
+Comencemos elaborando el documento XML de inventario conforme a la estructura pensada. Abre un nuevo archivo en VS Code llamado `inventario.xml` y construye el siguiente contenido:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<inventario>
+    <ordenador id="PC001">
+        <ubicacion>Laboratorio 1</ubicacion>
+        <usuario>Ana Gómez</usuario>
+        <sistemaOperativo>Windows 10 Pro</sistemaOperativo>
+    </ordenador>
+    <ordenador id="PC002">
+        <ubicacion>Oficina 3</ubicacion>
+        <usuario>Carlos López</usuario>
+        <sistemaOperativo>Ubuntu 20.04 LTS</sistemaOperativo>
+    </ordenador>
+</inventario>
+```
+
+Aquí hemos creado dos entradas de ejemplo bajo la raíz `<inventario>`. Cada `<ordenador>` tiene un atributo `id` distinto (`PC001` y `PC002`) y los tres subelementos acordados. Antes de continuar, verifica que `inventario.xml` está **bien formado** (well-formed): cada etiqueta abre y cierra correctamente, la jerarquía es correcta y la codificación UTF-8 está declarada. Si tienes la extensión XML activa, cualquier error de sintaxis se te indicará; de lo contrario, una forma rápida de comprobarlo es abrir el archivo en un navegador web moderno, ya que suelen mostrar error si el XML está mal formado.
+
+Actualmente, este documento XML **no tiene esquema asociado**. Podría tener errores lógicos (por ejemplo, faltar un `<usuario>` en algún `<ordenador>`) y no lo sabríamos fácilmente. Mantén abierto este archivo; el siguiente paso será crear la definición formal de su estructura.  
+*(Este documento servirá para aplicar luego los criterios RA4.e y RA4.f, usando un esquema para su validación y asociación, pero de momento hemos definido la información que contendrá, alineado con RA4.a).*  
 
 
 
