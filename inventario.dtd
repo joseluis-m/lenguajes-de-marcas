@@ -1,0 +1,10 @@
+<!-- DTD para el inventario de ordenadores de la empresa -->
+<!ELEMENT inventario (ordenador+)>
+<!ELEMENT ordenador (ubicacion, usuario, sistemaOperativo)>
+<!ELEMENT ubicacion (#PCDATA)>
+<!ELEMENT usuario (#PCDATA)>
+<!ELEMENT sistemaOperativo (#PCDATA)>
+<!ATTLIST ordenador
+    id ID #REQUIRED
+>
+
