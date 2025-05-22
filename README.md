@@ -468,12 +468,12 @@ Comencemos elaborando el documento XML de inventario conforme a la estructura pe
 <inventario>
     <ordenador id="PC001">
         <ubicacion>Laboratorio 1</ubicacion>
-        <usuario>Ana Gómez</usuario>
+        <usuario>José Luis Moreno</usuario>
         <sistemaOperativo>Windows 10 Pro</sistemaOperativo>
     </ordenador>
     <ordenador id="PC002">
         <ubicacion>Oficina 3</ubicacion>
-        <usuario>Carlos López</usuario>
+        <usuario>Aníbal Goritmo</usuario>
         <sistemaOperativo>Ubuntu 20.04 LTS</sistemaOperativo>
     </ordenador>
 </inventario>
