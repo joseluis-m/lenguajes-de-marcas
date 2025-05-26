@@ -579,6 +579,60 @@ Piensa también si tu esquema necesita alguna adaptación: por ejemplo, ¿y si e
 
 > **Nota:** Si optáramos por usar XSD en vez de DTD, la mecánica sería parecida: definir un archivo `.xsd` con elementos y tipos, y luego referenciarlo desde el XML con un atributo `xsi:noNamespaceSchemaLocation="inventario.xsd"` en la raíz (junto con `xmlns:xsi`). La validación se haría igual. XSD permitiría, por ejemplo, restringir que `<sistemaOperativo>` solo pueda tener ciertos valores (Windows, Linux, etc.) usando enumeraciones, o definir que el contenido de `<id>` siga un patrón particular. Estas son ventajas de XSD sobre DTD. Sin embargo, para propósitos de este ejercicio, la DTD cumple con ilustrar el proceso de definición de esquema y validación.
 
+# 8. Conversión XML con XSLT
+
+En este apartado aprenderemos a utilizar **XSLT** (Extensible Stylesheet Language Transformations) para transformar documentos XML a otros formatos (por ejemplo, HTML). XSLT es un lenguaje de plantillas (template language) que **toma un documento XML de entrada y produce otro documento según reglas definidas en una hoja de estilos XSL**. Esto permite *añadir, eliminar y reorganizar elementos* del XML original para obtener la salida deseada. El objetivo es comprender la sintaxis de XSLT y realizar una conversión concreta.
+
+Supongamos que tenemos un catálogo de productos en XML (`catalogo.xml`) y queremos generar una página HTML con la lista de productos. El archivo `catalogo.xml` podría ser:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="catalogo.xsl"?>
+<catalogo>
+  <producto>
+    <nombre>Zapatos</nombre>
+    <precio>50</precio>
+  </producto>
+  <producto>
+    <nombre>Camisa</nombre>
+    <precio>20</precio>
+  </producto>
+</catalogo>
+```
+
+Este XML contiene dos productos con sus nombres y precios. El procesamiento de instrucciones `<?xml-stylesheet ...?>` indica que asociaremos este XML con la hoja XSLT `catalogo.xsl`. A continuación, creamos la hoja de estilos XSL (`catalogo.xsl`) que define la conversión:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+  <!-- Template que coincide con la raíz del documento -->
+  <xsl:template match="/">
+    <html>
+      <body>
+        <h2>Catálogo de Productos</h2>
+        <ul>
+          <!-- Itera sobre cada <producto> -->
+          <xsl:for-each select="catalogo/producto">
+            <li>
+              <strong><xsl:value-of select="nombre"/></strong> – 
+              <xsl:value-of select="precio"/>€
+            </li>
+          </xsl:for-each>
+        </ul>
+      </body>
+    </html>
+  </xsl:template>
+</xsl:stylesheet>
+```
+
+- Declaramos que usamos XSLT 1.0 con el espacio de nombres `xmlns:xsl`.
+- `<xsl:template match="/">`  define una plantilla que se aplica al nodo raíz del documento XML (en nuestro caso `<catalogo>`, el elemento principal que contiene todos los productos). Dentro de esta plantilla se construye la estructura HTML que se generará como resultado.
+- Dentro del `<xsl:for-each select="catalogo/producto">` recorremos cada elemento `<producto>`. Por cada producto, añadimos un `<li>` con el contenido del nombre y precio mediante `<xsl:value-of select="…"/>`.
+
+Este XSLT generará un HTML con un listado de los productos (con nombre en negrita y precio). Si abrimos el XML en un navegador compatible o usamos un procesador XSLT (por ejemplo, en la terminal: `xsltproc catalogo.xsl catalogo.xml > catalogo.html`), obtendremos una página con los datos transformados. Así, hemos realizado la **conversión de XML a HTML** usando XSLT.
+
+
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
 
