@@ -446,7 +446,7 @@ Si la herramienta no reconoce el feed, repite el paso anterior de validación po
 
 > **Nota:** Si bien hemos usado RSS 2.0 en este ejercicio, recuerda que **Atom** es otra tecnología de sindicación (formato XML RFC 4287) con estructura algo distinta (usa `<feed>` en vez de `<rss>` y elementos estandarizados como `<entry>` para ítems). Las ventajas de sindicación (contenido actualizado automáticamente disponible) se aplican por igual a RSS y Atom. Conocer ambas tecnologías te da una perspectiva más amplia, pero la metodología de creación y validación es similar a lo practicado.  
 
-# 7. Definición y uso de un esquema XML
+# 7. Definición y uso de un esquema XML[^6]
 
 Continuando con el punto anterior, trabajaremos con _esquemas XML_ que permiten definir la sintaxis y estructura válida de un tipo de documento XML. Un esquema actúa como “contrato”: especifica qué elementos pueden aparecer, en qué orden, qué atributos están permitidos, qué valores son válidos, etc. Esto ayuda a validar XML automáticamente y asegurar que la información cumpla ciertos requisitos formales. Existen principalmente dos formas tradicionales de definir esquemas en XML: la **DTD** (Document Type Definition), propia de la especificación XML 1.0, y los esquemas XML **XSD**, recomendación más reciente del W3C que es más potente y flexible. En esta práctica utilizaremos DTD por simplicidad, pero los pasos serían análogos usando XSD.
 
@@ -579,7 +579,7 @@ Piensa también si tu esquema necesita alguna adaptación: por ejemplo, ¿y si e
 
 > **Nota:** Si optáramos por usar XSD en vez de DTD, la mecánica sería parecida: definir un archivo `.xsd` con elementos y tipos, y luego referenciarlo desde el XML con un atributo `xsi:noNamespaceSchemaLocation="inventario.xsd"` en la raíz (junto con `xmlns:xsi`). La validación se haría igual. XSD permitiría, por ejemplo, restringir que `<sistemaOperativo>` solo pueda tener ciertos valores (Windows, Linux, etc.) usando enumeraciones, o definir que el contenido de `<id>` siga un patrón particular. Estas son ventajas de XSD sobre DTD. Sin embargo, para propósitos de este ejercicio, la DTD cumple con ilustrar el proceso de definición de esquema y validación.
 
-# 8. Conversión XML con XSLT
+# 8. Conversión XML con XSLT[^7]
 
 En este apartado aprenderemos a utilizar **XSLT** (Extensible Stylesheet Language Transformations) para transformar documentos XML a otros formatos (por ejemplo, HTML). XSLT es un lenguaje de plantillas (template language) que **toma un documento XML de entrada y produce otro documento según reglas definidas en una hoja de estilos XSL**. Esto permite *añadir, eliminar y reorganizar elementos* del XML original para obtener la salida deseada. El objetivo es comprender la sintaxis de XSLT y realizar una conversión concreta.
 
@@ -632,6 +632,11 @@ Este XML contiene dos productos con sus nombres y precios. El procesamiento de i
 
 Este XSLT generará un HTML con un listado de los productos (con nombre en negrita y precio). Si abrimos el XML en un navegador compatible o usamos un procesador XSLT (por ejemplo, en la terminal: `xsltproc catalogo.xsl catalogo.xml > catalogo.html`), obtendremos una página con los datos transformados. Así, hemos realizado la **conversión de XML a HTML** usando XSLT.
 
+# 9. Uso de ERP
+
+Un **ERP (Enterprise Resource Planning)** es un sistema que integra y gestiona los procesos centrales de una empresa (finanzas, inventario, ventas, etc.) proporcionando una visión unificada y una única fuente de información. Por ejemplo, **SAP** es uno de los ERP más utilizados a nivel mundial, especialmente en grandes empresas, ya que ofrece soluciones robustas y escalables para la gestión empresarial. Asimismo, **Odoo** es un conjunto de aplicaciones de negocio de código abierto que cubre necesidades como CRM, inventario, contabilidad, punto de venta, etc.
+
+Un **CRM (Customer Relationship Management)** es una herramienta orientada a gestionar las relaciones con los clientes, optimizando procesos de ventas, marketing y atención al cliente. En este ámbito, **Salesforce** es el CRM más conocido y utilizado globalmente, y puede integrarse tanto con SAP como con Odoo para potenciar la gestión comercial y mejorar la experiencia del cliente.
 
 
 [^1]: Real Decreto 1629/2009, resultado de aprendizaje 1, criterios de evaluación: 1, 2, 3, 4, 5 (características y ventajas de lenguajes de marcas; clasificación por tipos y ámbitos; necesidad de un lenguaje de propósito general).
@@ -646,6 +651,7 @@ Este XSLT generará un HTML con un listado de los productos (con nombre en negri
 
 [^5]: Real Decreto 1629/2009, resultado de aprendizaje 3.
 
-[^5]: Real Decreto 1629/2009, resultado de aprendizaje 4.
+[^6]: Real Decreto 1629/2009, resultado de aprendizaje 4.
 
-[^6]: Real Decreto 1629/2009, resultado de aprendizaje 5.
+[^7]: Real Decreto 1629/2009, resultado de aprendizaje 5.
+
